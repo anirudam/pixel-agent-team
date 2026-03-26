@@ -277,74 +277,56 @@ function drawWallClock(ctx: CanvasRenderingContext2D, x: number, y: number, fram
   ctx.fillRect(x - 1, y - 1, 2, 2);
 }
 
-// ---- Potted Plant ----
-function drawPlant(ctx: CanvasRenderingContext2D, x: number, y: number, frame: number, seed: number) {
-  const sway = Math.sin(frame * 0.02 + seed) * 1;
+// ---- Potted Palm (reference style — dark pot, palm leaves) ----
+function drawPlant(ctx: CanvasRenderingContext2D, x: number, y: number, frame: number, _seed: number) {
+  const sway = Math.sin(frame * 0.02) * 1;
 
-  // Pot
-  ctx.fillStyle = "#A0522D";
-  ctx.fillRect(x - 10, y, 20, 4);
-  ctx.fillStyle = "#8B4513";
-  ctx.fillRect(x - 8, y + 4, 16, 14);
-  ctx.fillStyle = "#7A3B10";
-  ctx.fillRect(x - 6, y + 16, 12, 2);
+  // Dark round pot
+  ctx.fillStyle = "#3A3A3A";
+  ctx.fillRect(x - 9, y + 2, 18, 3);
+  ctx.fillRect(x - 8, y + 5, 16, 12);
+  ctx.fillRect(x - 7, y + 15, 14, 2);
+  // Pot highlight
+  ctx.fillStyle = "#4A4A4A";
+  ctx.fillRect(x - 7, y + 3, 14, 3);
+  // Pot rim
+  ctx.fillStyle = "#2A2A2A";
+  ctx.fillRect(x - 9, y + 1, 18, 2);
   // Soil
   ctx.fillStyle = "#3E2723";
-  ctx.fillRect(x - 7, y + 4, 14, 3);
-
-  // Stem
-  ctx.fillStyle = "#2D5A27";
-  ctx.fillRect(x - 1 + sway, y - 14, 3, 18);
-
-  // Leaves (pixel-art style)
-  ctx.fillStyle = "#4CAF50";
-  ctx.fillRect(x - 10 + sway, y - 18, 8, 8);
-  ctx.fillRect(x + 3 + sway, y - 22, 8, 8);
-  ctx.fillRect(x - 7 + sway, y - 26, 6, 8);
-  ctx.fillRect(x + 2 + sway, y - 28, 6, 8);
-  // Leaf highlights
-  ctx.fillStyle = "#66BB6A";
-  ctx.fillRect(x - 8 + sway, y - 16, 3, 3);
-  ctx.fillRect(x + 5 + sway, y - 20, 3, 3);
-  ctx.fillRect(x - 5 + sway, y - 24, 2, 3);
-  // Dark detail
-  ctx.fillStyle = "#388E3C";
-  ctx.fillRect(x - 4 + sway, y - 14, 2, 2);
-  ctx.fillRect(x + 6 + sway, y - 26, 2, 2);
-}
-
-// ---- Tall Plant (large pot) ----
-function drawTallPlant(ctx: CanvasRenderingContext2D, x: number, y: number, frame: number) {
-  const sway = Math.sin(frame * 0.015) * 1.5;
-
-  // Large pot
-  ctx.fillStyle = "#A0522D";
-  ctx.fillRect(x - 14, y, 28, 5);
-  ctx.fillStyle = "#8B4513";
-  ctx.fillRect(x - 12, y + 5, 24, 20);
-  ctx.fillStyle = "#7A3B10";
-  ctx.fillRect(x - 10, y + 23, 20, 3);
-  ctx.fillStyle = "#3E2723";
-  ctx.fillRect(x - 11, y + 5, 22, 4);
+  ctx.fillRect(x - 7, y + 3, 14, 2);
 
   // Trunk
   ctx.fillStyle = "#5D4037";
-  ctx.fillRect(x - 2, y - 30, 5, 34);
+  ctx.fillRect(x - 1 + sway * 0.3, y - 16, 3, 20);
   ctx.fillStyle = "#4E342E";
-  ctx.fillRect(x - 1, y - 30, 1, 34);
+  ctx.fillRect(x + sway * 0.3, y - 16, 1, 20);
 
-  // Large leaf cluster
+  // Palm leaves — spread outward
   ctx.fillStyle = "#2E7D32";
-  ctx.fillRect(x - 16 + sway, y - 42, 14, 16);
-  ctx.fillRect(x + 3 + sway, y - 46, 14, 16);
-  ctx.fillRect(x - 10 + sway, y - 52, 12, 14);
-  ctx.fillRect(x + 0 + sway, y - 56, 10, 14);
-  ctx.fillStyle = "#43A047";
-  ctx.fillRect(x - 14 + sway, y - 40, 10, 10);
-  ctx.fillRect(x + 5 + sway, y - 44, 10, 10);
-  ctx.fillStyle = "#66BB6A";
-  ctx.fillRect(x - 12 + sway, y - 38, 4, 4);
-  ctx.fillRect(x + 8 + sway, y - 42, 4, 4);
+  // Left leaves (drooping)
+  ctx.fillRect(x - 14 + sway, y - 20, 10, 3);
+  ctx.fillRect(x - 16 + sway, y - 18, 8, 3);
+  ctx.fillRect(x - 12 + sway, y - 16, 6, 2);
+  // Right leaves (drooping)
+  ctx.fillRect(x + 4 + sway, y - 20, 10, 3);
+  ctx.fillRect(x + 8 + sway, y - 18, 8, 3);
+  ctx.fillRect(x + 6 + sway, y - 16, 6, 2);
+  // Top leaves (upward)
+  ctx.fillStyle = "#388E3C";
+  ctx.fillRect(x - 6 + sway, y - 24, 5, 6);
+  ctx.fillRect(x + 2 + sway, y - 26, 5, 6);
+  ctx.fillRect(x - 2 + sway, y - 22, 5, 4);
+  // Highlights
+  ctx.fillStyle = "#4CAF50";
+  ctx.fillRect(x - 13 + sway, y - 19, 3, 1);
+  ctx.fillRect(x + 10 + sway, y - 19, 3, 1);
+  ctx.fillRect(x - 4 + sway, y - 24, 2, 2);
+  ctx.fillRect(x + 4 + sway, y - 25, 2, 2);
+}
+
+function drawTallPlant(ctx: CanvasRenderingContext2D, x: number, y: number, frame: number) {
+  drawPlant(ctx, x, y, frame, 0);
 }
 
 // ---- Boss Desk (larger, darker, premium) ----
@@ -957,30 +939,62 @@ function drawTrashBin(ctx: CanvasRenderingContext2D, x: number, y: number) {
   ctx.fillRect(x + 4, y + 3, 1, 10);
 }
 
-// ---- Water Cooler ----
+// ---- Water Cooler (larger) ----
 function drawWaterCooler(ctx: CanvasRenderingContext2D, x: number, y: number) {
-  // Stand
+  // Stand legs
+  ctx.fillStyle = "#999999";
+  ctx.fillRect(x - 10, y + 30, 4, 6);
+  ctx.fillRect(x + 6, y + 30, 4, 6);
+
+  // Stand body
   ctx.fillStyle = "#CCCCCC";
-  ctx.fillRect(x - 8, y + 10, 16, 20);
+  ctx.fillRect(x - 12, y + 8, 24, 24);
+  ctx.fillStyle = "#BBBBBB";
+  ctx.fillRect(x - 12, y + 8, 24, 2);
+  // Panel lines
   ctx.fillStyle = "#AAAAAA";
-  ctx.fillRect(x - 10, y + 28, 20, 3);
-  // Water jug
+  ctx.fillRect(x - 10, y + 18, 20, 1);
+  // Base plate
+  ctx.fillStyle = "#AAAAAA";
+  ctx.fillRect(x - 14, y + 30, 28, 3);
+
+  // Water jug (big blue bottle on top)
   ctx.fillStyle = "#A8D8EA";
-  ctx.fillRect(x - 6, y - 10, 12, 22);
+  ctx.fillRect(x - 8, y - 18, 16, 28);
   ctx.fillStyle = "#87CEEB";
-  ctx.fillRect(x - 4, y - 8, 8, 18);
-  // Cap
-  ctx.fillStyle = "#FFFFFF";
-  ctx.fillRect(x - 4, y - 12, 8, 4);
+  ctx.fillRect(x - 6, y - 16, 12, 24);
   // Water level
   ctx.fillStyle = "#5DADE2";
-  ctx.fillRect(x - 3, y - 2, 6, 12);
-  // Tap
+  ctx.fillRect(x - 5, y - 4, 10, 14);
+  // Cap
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(x - 5, y - 20, 10, 4);
+  // Bottle neck
+  ctx.fillStyle = "#A8D8EA";
+  ctx.fillRect(x - 4, y - 22, 8, 3);
+  // Highlight
+  ctx.fillStyle = "#C8EFFF44";
+  ctx.fillRect(x - 4, y - 14, 3, 16);
+
+  // Taps
   ctx.fillStyle = "#C0392B";
-  ctx.fillRect(x + 5, y + 14, 4, 3);
-  // Cup holder
+  ctx.fillRect(x + 10, y + 12, 5, 4);
+  ctx.fillStyle = "#3498DB";
+  ctx.fillRect(x + 10, y + 20, 5, 4);
+
+  // Drip tray
+  ctx.fillStyle = "#888888";
+  ctx.fillRect(x + 8, y + 26, 8, 2);
+
+  // Cup holder side
   ctx.fillStyle = "#DDDDDD";
-  ctx.fillRect(x - 12, y + 18, 6, 8);
+  ctx.fillRect(x - 16, y + 14, 6, 12);
+  ctx.fillStyle = "#CCCCCC";
+  ctx.fillRect(x - 15, y + 15, 4, 10);
+  // Paper cups
+  ctx.fillStyle = "#F5F5F5";
+  ctx.fillRect(x - 15, y + 16, 3, 6);
+  ctx.fillRect(x - 14, y + 17, 2, 4);
 }
 
 // ---- Wall Painting ----
@@ -1025,7 +1039,64 @@ function drawPainting(ctx: CanvasRenderingContext2D, x: number, y: number, varia
   }
 }
 
-// ---- Rug / Carpet ----
+// ---- Full Carpet (covers entire main agent zone) ----
+function drawCarpet(ctx: CanvasRenderingContext2D, top: number, bottom: number, w: number) {
+  const h = bottom - top;
+  const margin = 12;
+
+  // Main carpet fill — deep burgundy/maroon
+  ctx.fillStyle = "#5C2028";
+  ctx.fillRect(margin, top + 4, w - margin * 2, h - 8);
+
+  // Outer border — gold
+  ctx.fillStyle = "#B8860B88";
+  ctx.fillRect(margin, top + 4, w - margin * 2, 2);          // top
+  ctx.fillRect(margin, bottom - 6, w - margin * 2, 2);       // bottom
+  ctx.fillRect(margin, top + 4, 2, h - 8);                   // left
+  ctx.fillRect(w - margin - 2, top + 4, 2, h - 8);           // right
+
+  // Inner border — darker
+  ctx.fillStyle = "#7A3040";
+  ctx.fillRect(margin + 6, top + 10, w - margin * 2 - 12, h - 20);
+
+  // Second gold border (inner)
+  ctx.fillStyle = "#B8860B44";
+  ctx.fillRect(margin + 6, top + 10, w - margin * 2 - 12, 1);
+  ctx.fillRect(margin + 6, bottom - 11, w - margin * 2 - 12, 1);
+  ctx.fillRect(margin + 6, top + 10, 1, h - 20);
+  ctx.fillRect(w - margin - 7, top + 10, 1, h - 20);
+
+  // Pattern — repeating diamond motifs across the carpet
+  ctx.fillStyle = "#B8860B22";
+  const patternSpacingX = 40;
+  const patternSpacingY = 36;
+  const startX = margin + 20;
+  const startY = top + 20;
+  for (let py = startY; py < bottom - 20; py += patternSpacingY) {
+    const rowOffset = ((py - startY) / patternSpacingY) % 2 === 0 ? 0 : patternSpacingX / 2;
+    for (let px = startX + rowOffset; px < w - margin - 20; px += patternSpacingX) {
+      // Diamond shape
+      ctx.fillRect(px, py - 3, 6, 2);
+      ctx.fillRect(px - 2, py - 1, 10, 2);
+      ctx.fillRect(px, py + 1, 6, 2);
+    }
+  }
+
+  // Corner flourishes
+  const corners = [
+    [margin + 8, top + 6],
+    [w - margin - 14, top + 6],
+    [margin + 8, bottom - 12],
+    [w - margin - 14, bottom - 12],
+  ];
+  ctx.fillStyle = "#B8860B33";
+  for (const [cx, cy] of corners) {
+    ctx.fillRect(cx, cy, 6, 6);
+    ctx.fillRect(cx + 1, cy + 1, 4, 4);
+  }
+}
+
+// ---- Rug / Carpet (unused) ----
 function drawRug(ctx: CanvasRenderingContext2D, x: number, y: number, w: number) {
   const rw = Math.min(w - 40, 300);
   const rx = x - rw / 2;
@@ -1117,80 +1188,152 @@ function drawCeilingLights(ctx: CanvasRenderingContext2D) {
 }
 
 // ---- Pixel Cat ----
-function drawCat(ctx: CanvasRenderingContext2D, x: number, y: number, frame: number) {
+// Cat position — walks a loop around the entire office
+function getCatPosition(frame: number, canvasW: number, canvasH: number): { x: number; y: number; facingRight: boolean; sitting: boolean } {
+  const top = WALL_HEIGHT + 40;
+  const bot = canvasH - 30;
+  const mid = (top + bot) / 2;
+
+  // Avoid left items (x < 70) and right items (x > canvasW - 80)
+  const safeL = 80;                   // clear of water cooler/trash
+  const safeR = canvasW - 80;         // clear of cat house/litter box/toys
+  const waypoints = [
+    { x: safeL, y: top },             // top-left (clear of plant)
+    { x: safeR, y: top },             // top-right (clear of plant)
+    { x: canvasW / 2, y: mid - 20 },  // center
+    { x: safeL, y: mid + 20 },        // mid-left
+    { x: canvasW / 2, y: bot },       // bottom-center
+    { x: safeR, y: mid + 20 },        // mid-right
+  ];
+
+  const speed = 500;
+  const total = waypoints.length;
+  const progress = (frame * 0.8) % (total * speed);
+  const seg = Math.floor(progress / speed) % total;
+  const segT = (progress % speed) / speed;
+  const sitting = segT > 0.88;
+  const t = sitting ? 1 : segT / 0.88;
+
+  const from = waypoints[seg];
+  const to = waypoints[(seg + 1) % total];
+  const x = from.x + (to.x - from.x) * t;
+  const y = from.y + (to.y - from.y) * t;
+  const facingRight = to.x >= from.x;
+
+  return { x, y, facingRight, sitting };
+}
+
+function drawCat(ctx: CanvasRenderingContext2D, x: number, y: number, frame: number, facingRight: boolean, sitting: boolean) {
+  ctx.save();
+  if (!facingRight) {
+    ctx.translate(x, 0);
+    ctx.scale(-1, 1);
+    ctx.translate(-x, 0);
+  }
+
   const tailWag = Math.sin(frame * 0.08) * 3;
   const earTwitch = Math.sin(frame * 0.05) > 0.8 ? -1 : 0;
   const blink = Math.sin(frame * 0.03) > 0.95;
-  const breathe = Math.sin(frame * 0.04) * 0.5;
 
-  // Tail
-  ctx.fillStyle = "#FF8C00";
-  ctx.fillRect(x + 8, y - 4 + tailWag, 3, 8);
-  ctx.fillRect(x + 10, y - 6 + tailWag, 3, 4);
-  // Tail tip
-  ctx.fillStyle = "#FFB347";
-  ctx.fillRect(x + 11, y - 7 + tailWag, 2, 3);
+  if (sitting) {
+    // Sitting pose — tail curled, upright body
+    const breathe = Math.sin(frame * 0.04) * 0.5;
+    ctx.fillStyle = "#FF8C00";
+    ctx.fillRect(x + 6, y + 4 + tailWag * 0.3, 4, 3);
+    ctx.fillRect(x + 9, y + 2 + tailWag * 0.3, 3, 3);
+    ctx.fillStyle = "#FFB347";
+    ctx.fillRect(x + 11, y + 1 + tailWag * 0.3, 2, 2);
 
-  // Body
-  ctx.fillStyle = "#FF8C00";
-  ctx.fillRect(x - 6, y + breathe, 14, 8);
-  // Belly
-  ctx.fillStyle = "#FFB347";
-  ctx.fillRect(x - 4, y + 2 + breathe, 10, 5);
-  // Stripes
-  ctx.fillStyle = "#E07000";
-  ctx.fillRect(x - 4, y + 1 + breathe, 2, 6);
-  ctx.fillRect(x + 2, y + 1 + breathe, 2, 6);
+    ctx.fillStyle = "#FF8C00";
+    ctx.fillRect(x - 5, y - 4 + breathe, 12, 12);
+    ctx.fillStyle = "#FFB347";
+    ctx.fillRect(x - 3, y + breathe, 8, 6);
+    ctx.fillStyle = "#E07000";
+    ctx.fillRect(x - 3, y - 2 + breathe, 2, 8);
+    ctx.fillRect(x + 3, y - 2 + breathe, 2, 8);
 
-  // Head
-  ctx.fillStyle = "#FF8C00";
-  ctx.fillRect(x - 6, y - 8, 12, 10);
-  // Face
-  ctx.fillStyle = "#FFB347";
-  ctx.fillRect(x - 4, y - 4, 8, 5);
+    ctx.fillStyle = "#FF8C00";
+    ctx.fillRect(x - 4, y + 7, 4, 3);
+    ctx.fillRect(x + 2, y + 7, 4, 3);
 
-  // Ears
-  ctx.fillStyle = "#FF8C00";
-  ctx.fillRect(x - 7, y - 12 + earTwitch, 4, 5);
-  ctx.fillRect(x + 3, y - 12 + earTwitch, 4, 5);
-  // Inner ear
-  ctx.fillStyle = "#FFB8B8";
-  ctx.fillRect(x - 6, y - 11 + earTwitch, 2, 3);
-  ctx.fillRect(x + 4, y - 11 + earTwitch, 2, 3);
-
-  // Eyes
-  if (!blink) {
-    ctx.fillStyle = "#2ECC71";
-    ctx.fillRect(x - 4, y - 6, 3, 3);
-    ctx.fillRect(x + 1, y - 6, 3, 3);
-    // Pupils
-    ctx.fillStyle = "#1A1A1A";
-    ctx.fillRect(x - 3, y - 5, 1, 2);
-    ctx.fillRect(x + 2, y - 5, 1, 2);
+    ctx.fillStyle = "#FF8C00";
+    ctx.fillRect(x - 6, y - 14, 12, 11);
+    ctx.fillStyle = "#FFB347";
+    ctx.fillRect(x - 4, y - 10, 8, 5);
   } else {
-    ctx.fillStyle = "#1A1A1A";
-    ctx.fillRect(x - 4, y - 5, 3, 1);
-    ctx.fillRect(x + 1, y - 5, 3, 1);
+    // Walking pose — horizontal body, animated legs
+    const walkCycle = Math.sin(frame * 0.15);
+    const legF = walkCycle * 2;
+    const legB = -walkCycle * 2;
+
+    // Tail up
+    ctx.fillStyle = "#FF8C00";
+    ctx.fillRect(x - 8, y - 8 + tailWag, 3, 8);
+    ctx.fillRect(x - 10, y - 10 + tailWag, 3, 4);
+    ctx.fillStyle = "#FFB347";
+    ctx.fillRect(x - 11, y - 11 + tailWag, 2, 3);
+
+    // Body
+    ctx.fillStyle = "#FF8C00";
+    ctx.fillRect(x - 7, y - 2, 16, 7);
+    ctx.fillStyle = "#FFB347";
+    ctx.fillRect(x - 5, y, 12, 4);
+    ctx.fillStyle = "#E07000";
+    ctx.fillRect(x - 3, y - 1, 2, 5);
+    ctx.fillRect(x + 3, y - 1, 2, 5);
+
+    // Legs
+    ctx.fillStyle = "#FF8C00";
+    ctx.fillRect(x + 5, y + 4 + legF, 3, 5);
+    ctx.fillRect(x + 2, y + 4 + legB, 3, 5);
+    ctx.fillRect(x - 6, y + 4 + legB, 3, 5);
+    ctx.fillRect(x - 3, y + 4 + legF, 3, 5);
+    ctx.fillStyle = "#FFB8B8";
+    ctx.fillRect(x + 5, y + 8 + legF, 3, 1);
+    ctx.fillRect(x + 2, y + 8 + legB, 3, 1);
+    ctx.fillRect(x - 6, y + 8 + legB, 3, 1);
+    ctx.fillRect(x - 3, y + 8 + legF, 3, 1);
+
+    // Head
+    ctx.fillStyle = "#FF8C00";
+    ctx.fillRect(x + 5, y - 8, 12, 10);
+    ctx.fillStyle = "#FFB347";
+    ctx.fillRect(x + 7, y - 4, 8, 5);
   }
 
-  // Nose
-  ctx.fillStyle = "#FF6B6B";
-  ctx.fillRect(x - 1, y - 3, 2, 1);
-  // Whiskers
-  ctx.fillStyle = "#CCCCCC";
-  ctx.fillRect(x - 10, y - 3, 5, 1);
-  ctx.fillRect(x + 5, y - 3, 5, 1);
-  ctx.fillRect(x - 9, y - 1, 4, 1);
-  ctx.fillRect(x + 5, y - 1, 4, 1);
+  // Head features
+  const hx = sitting ? x : x + 11;
+  const hy = sitting ? y - 10 : y - 4;
 
-  // Paws
   ctx.fillStyle = "#FF8C00";
-  ctx.fillRect(x - 6, y + 7, 4, 3);
-  ctx.fillRect(x + 2, y + 7, 4, 3);
-  // Paw pads
+  ctx.fillRect(hx - 6, hy - 6 + earTwitch, 4, 5);
+  ctx.fillRect(hx + 2, hy - 6 + earTwitch, 4, 5);
   ctx.fillStyle = "#FFB8B8";
-  ctx.fillRect(x - 5, y + 8, 2, 1);
-  ctx.fillRect(x + 3, y + 8, 2, 1);
+  ctx.fillRect(hx - 5, hy - 5 + earTwitch, 2, 3);
+  ctx.fillRect(hx + 3, hy - 5 + earTwitch, 2, 3);
+
+  if (!blink) {
+    ctx.fillStyle = "#2ECC71";
+    ctx.fillRect(hx - 3, hy, 3, 3);
+    ctx.fillRect(hx + 1, hy, 3, 3);
+    ctx.fillStyle = "#1A1A1A";
+    ctx.fillRect(hx - 2, hy + 1, 1, 2);
+    ctx.fillRect(hx + 2, hy + 1, 1, 2);
+  } else {
+    ctx.fillStyle = "#1A1A1A";
+    ctx.fillRect(hx - 3, hy + 1, 3, 1);
+    ctx.fillRect(hx + 1, hy + 1, 3, 1);
+  }
+
+  ctx.fillStyle = "#FF6B6B";
+  ctx.fillRect(hx - 1, hy + 3, 2, 1);
+  ctx.fillStyle = "#CCCCCC";
+  ctx.fillRect(hx - 8, hy + 2, 4, 1);
+  ctx.fillRect(hx + 5, hy + 2, 4, 1);
+  ctx.fillRect(hx - 7, hy + 4, 3, 1);
+  ctx.fillRect(hx + 5, hy + 4, 3, 1);
+
+  ctx.restore();
 }
 
 // ---- Wall Poster ----
@@ -1241,6 +1384,153 @@ function drawAC(ctx: CanvasRenderingContext2D, x: number, y: number, frame: numb
   ctx.fillStyle = "#FFFFFF08";
   const airOff = (frame * 0.3) % 12;
   ctx.fillRect(x + 4, y + 14, 32, 4 + airOff);
+}
+
+// ---- Cat Toys ----
+function drawCatToys(ctx: CanvasRenderingContext2D, x: number, y: number, frame: number) {
+  // Ball (rolling slightly)
+  const ballX = x + Math.sin(frame * 0.03) * 2;
+  ctx.fillStyle = "#E74C3C";
+  ctx.fillRect(ballX - 3, y, 6, 6);
+  ctx.fillStyle = "#F5B7B1";
+  ctx.fillRect(ballX - 1, y + 1, 2, 2);
+  // Ball stripe
+  ctx.fillStyle = "#C0392B";
+  ctx.fillRect(ballX - 3, y + 3, 6, 1);
+
+  // Mouse toy
+  ctx.fillStyle = "#888888";
+  ctx.fillRect(x + 12, y + 2, 8, 5);
+  ctx.fillStyle = "#999999";
+  ctx.fillRect(x + 13, y + 3, 6, 3);
+  // Ears
+  ctx.fillStyle = "#AAAAAA";
+  ctx.fillRect(x + 12, y, 2, 3);
+  ctx.fillRect(x + 16, y, 2, 3);
+  // Tail
+  ctx.fillStyle = "#777777";
+  ctx.fillRect(x + 20, y + 3, 4, 1);
+  ctx.fillRect(x + 23, y + 2, 2, 1);
+  // Eye
+  ctx.fillStyle = "#333333";
+  ctx.fillRect(x + 14, y + 3, 1, 1);
+
+  // Feather wand (leaning)
+  ctx.fillStyle = "#8B6E50";
+  ctx.fillRect(x - 8, y - 16, 2, 20);
+  // String
+  ctx.fillStyle = "#CCCCCC";
+  const swingX = Math.sin(frame * 0.04) * 3;
+  ctx.fillRect(x - 7 + swingX, y - 16, 1, 8);
+  // Feathers
+  ctx.fillStyle = "#9B59B6";
+  ctx.fillRect(x - 10 + swingX, y - 20, 4, 5);
+  ctx.fillRect(x - 8 + swingX, y - 22, 3, 4);
+  ctx.fillStyle = "#E91E63";
+  ctx.fillRect(x - 6 + swingX, y - 19, 3, 4);
+}
+
+// ---- Litter Box (ทรายแมว) ----
+function drawLitterBox(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  // Shadow
+  ctx.fillStyle = "#00000015";
+  ctx.fillRect(x - 14 + 2, y + 2, 28, 14);
+
+  // Box outer
+  ctx.fillStyle = "#7A8A9A";
+  ctx.fillRect(x - 14, y - 2, 28, 14);
+  // Box inner
+  ctx.fillStyle = "#8A9AAA";
+  ctx.fillRect(x - 12, y, 24, 10);
+  // Rim
+  ctx.fillStyle = "#6A7A8A";
+  ctx.fillRect(x - 14, y - 2, 28, 2);
+
+  // Sand fill
+  ctx.fillStyle = "#D4C8A0";
+  ctx.fillRect(x - 11, y + 1, 22, 8);
+  // Sand texture
+  ctx.fillStyle = "#C4B890";
+  ctx.fillRect(x - 8, y + 3, 3, 2);
+  ctx.fillRect(x + 2, y + 5, 4, 2);
+  ctx.fillRect(x - 4, y + 6, 2, 2);
+  ctx.fillRect(x + 7, y + 2, 3, 2);
+  // Darker sand spots
+  ctx.fillStyle = "#B4A880";
+  ctx.fillRect(x - 6, y + 2, 2, 1);
+  ctx.fillRect(x + 4, y + 4, 2, 1);
+
+  // Small scoop leaning on side
+  ctx.fillStyle = "#888888";
+  ctx.fillRect(x + 12, y - 4, 3, 8);
+  ctx.fillStyle = "#999999";
+  ctx.fillRect(x + 11, y - 6, 5, 3);
+  // Scoop holes
+  ctx.fillStyle = "#777777";
+  ctx.fillRect(x + 12, y - 5, 1, 1);
+  ctx.fillRect(x + 14, y - 5, 1, 1);
+}
+
+// ---- Cat House ----
+function drawCatHouse(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  // Shadow
+  ctx.fillStyle = "#00000018";
+  ctx.fillRect(x - 18 + 2, y - 6 + 2, 36, 32);
+
+  // Base/floor
+  ctx.fillStyle = "#5A3A1A";
+  ctx.fillRect(x - 20, y + 22, 40, 5);
+
+  // Walls
+  ctx.fillStyle = "#8B6E50";
+  ctx.fillRect(x - 18, y - 6, 36, 28);
+  // Inner wall (darker)
+  ctx.fillStyle = "#7A5E40";
+  ctx.fillRect(x - 16, y - 4, 32, 24);
+
+  // Entrance hole (big enough for cat)
+  ctx.fillStyle = "#3E2010";
+  ctx.fillRect(x - 8, y + 4, 16, 16);
+  // Entrance arch
+  ctx.fillRect(x - 6, y + 1, 12, 4);
+  // Inner shadow depth
+  ctx.fillStyle = "#2A1508";
+  ctx.fillRect(x - 6, y + 6, 12, 12);
+
+  // Cushion inside (visible through entrance)
+  ctx.fillStyle = "#C0392B";
+  ctx.fillRect(x - 5, y + 12, 10, 6);
+  ctx.fillStyle = "#E74C3C";
+  ctx.fillRect(x - 4, y + 13, 8, 3);
+
+  // Roof
+  ctx.fillStyle = "#6B4226";
+  ctx.fillRect(x - 20, y - 9, 40, 5);
+  // Roof top layers
+  ctx.fillStyle = "#5C3A1E";
+  ctx.fillRect(x - 16, y - 14, 32, 6);
+  ctx.fillRect(x - 10, y - 18, 20, 5);
+  // Roof peak
+  ctx.fillStyle = "#4A3018";
+  ctx.fillRect(x - 6, y - 21, 12, 4);
+  // Roof highlight
+  ctx.fillStyle = "#7A4E2E";
+  ctx.fillRect(x - 19, y - 9, 38, 1);
+  ctx.fillRect(x - 15, y - 14, 30, 1);
+
+  // Name tag
+  ctx.fillStyle = "#DAA520";
+  ctx.fillRect(x - 6, y - 4, 12, 5);
+  ctx.fillStyle = "#3A2A18";
+  ctx.font = "bold 4px monospace";
+  ctx.textAlign = "center";
+  ctx.fillText("CAT", x, y);
+
+  // Paw prints near entrance
+  ctx.fillStyle = "#5A403066";
+  ctx.fillRect(x - 12, y + 20, 2, 2);
+  ctx.fillRect(x - 15, y + 23, 2, 2);
+  ctx.fillRect(x - 10, y + 25, 2, 2);
 }
 
 // ---- Ambient Particles ----
@@ -1382,18 +1672,25 @@ function drawWallDecorations(ctx: CanvasRenderingContext2D, frame: number) {
 function drawFloorDecorations(ctx: CanvasRenderingContext2D, frame: number) {
   const w = CANVAS_WIDTH;
 
-  // Always show: 1 plant left, water cooler left, cat
+  // Left side: plant, water cooler, trash bin
   drawPlant(ctx, 30, WALL_HEIGHT + 30, frame, 0);
-  drawWaterCooler(ctx, 30, WALL_HEIGHT + 120);
-  drawCat(ctx, 60, WALL_HEIGHT + 70, frame);
+  drawWaterCooler(ctx, 34, WALL_HEIGHT + 100);
+  drawTrashBin(ctx, 56, WALL_HEIGHT + 110);
+
+  // Right side: plant, cat house, litter box, cat toys
+  drawCatHouse(ctx, w - 30, WALL_HEIGHT + 120);
+  drawLitterBox(ctx, w - 60, WALL_HEIGHT + 170);
+  drawCatToys(ctx, w - 20, WALL_HEIGHT + 185, frame);
+
+  // Cat roaming
+  const catPos = getCatPosition(frame, CANVAS_WIDTH, ctx.canvas.height);
+  drawCat(ctx, catPos.x, catPos.y, frame, catPos.facingRight, catPos.sitting);
 
   if (w >= 400) {
     drawPlant(ctx, w - 30, WALL_HEIGHT + 30, frame, 3);
-    drawTrashBin(ctx, w - 40, WALL_HEIGHT + 50);
   }
   if (w >= 550) {
     drawTallPlant(ctx, w - 50, WALL_HEIGHT + 80, frame);
-    drawPlant(ctx, w - 40, WALL_HEIGHT + 200, frame, 7);
   }
 }
 
@@ -1490,7 +1787,7 @@ export function OfficeScene() {
   const frameRef = useRef<number>(0);
   const agents = useAgents();
   const deskCols = useAgentStore((s) => s.deskCols);
-  const [tooltip, setTooltip] = useState<{ text: string; x: number; y: number; agentName?: string } | null>(null);
+  const [tooltip, setTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
 
   // Mouse hover handler for agent tooltips
   const handleMouseMove = useCallback(
@@ -1507,23 +1804,22 @@ export function OfficeScene() {
       const subAgents = agents.filter((a: Agent) => !!a.parentId);
       const layout = calcLayout(mainAgents.length, subAgents.length, deskCols);
 
-      // Check main agents
+      // Check main agents — show session description (what they're working on)
       for (let i = 0; i < mainAgents.length; i++) {
         const pos = layout.mainPositions[i];
         if (!pos) continue;
         if (Math.abs(mx - pos.x) < 40 && Math.abs(my - (pos.y + 34)) < 40) {
-          const desc = mainAgents[i].description || mainAgents[i].name;
-          setTooltip({ text: desc, x: e.clientX - rect.left, y: e.clientY - rect.top - 10, agentName: mainAgents[i].name });
+          const tooltipText = mainAgents[i].description || mainAgents[i].name;
+          setTooltip({ text: tooltipText, x: e.clientX - rect.left, y: e.clientY - rect.top - 10 });
           return;
         }
       }
-      // Check sub agents
+      // Check sub agents — show full agent name (e.g. "Explore: Test agent 1 - researcher")
       for (let i = 0; i < subAgents.length; i++) {
         const pos = layout.subPositions[i];
         if (!pos) continue;
         if (Math.abs(mx - pos.x) < 40 && Math.abs(my - (pos.y + 34)) < 40) {
-          const desc = subAgents[i].description || subAgents[i].name;
-          setTooltip({ text: desc, x: e.clientX - rect.left, y: e.clientY - rect.top - 10, agentName: subAgents[i].name });
+          setTooltip({ text: subAgents[i].name, x: e.clientX - rect.left, y: e.clientY - rect.top - 10 });
           return;
         }
       }
@@ -1561,34 +1857,13 @@ export function OfficeScene() {
       drawWallDecorations(ctx, frame);
       drawFloorDecorations(ctx, frame);
 
-      // Rug at zone divider
-      drawRug(ctx, layout.canvasWidth / 2, layout.zoneDividerY - 10, layout.canvasWidth);
+      // (no carpet)
 
       // Collect all drawable items for Y-sorting
       type Drawable = { y: number; draw: () => void };
       const drawables: Drawable[] = [];
 
-      // --- Zone divider line ---
-      drawables.push({
-        y: layout.zoneDividerY,
-        draw: () => {
-          ctx.save();
-          ctx.setLineDash([8, 6]);
-          ctx.strokeStyle = "#FFFFFF18";
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(40, layout.zoneDividerY);
-          ctx.lineTo(CANVAS_WIDTH - 40, layout.zoneDividerY);
-          ctx.stroke();
-          ctx.restore();
-
-          ctx.font = "bold 8px monospace";
-          ctx.textAlign = "left";
-          ctx.fillStyle = "#FFFFFF22";
-          ctx.fillText("MAIN AGENTS", 50, WALL_HEIGHT + 14);
-          ctx.fillText("SUBAGENTS", 50, layout.zoneDividerY + 14);
-        },
-      });
+      // Zone divider — labels only, no dashed line
 
       // --- Main agents (top zone - boss desks) ---
       mainAgents.forEach((agent: Agent, index: number) => {
@@ -1751,7 +2026,7 @@ export function OfficeScene() {
             className="absolute pointer-events-none bg-gray-900/95 text-white text-xs font-mono px-3 py-1.5 rounded-md border border-amber-700/40 shadow-lg whitespace-nowrap"
             style={{ left: tooltip.x, top: tooltip.y, transform: "translate(-50%, -100%)" }}
           >
-            {tooltip.agentName || tooltip.text}
+            {tooltip.text}
           </div>
         )}
       </div>
