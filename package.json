@@ -1,0 +1,13 @@
+{
+  "name": "pixel-agent-team",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pixel Agent Team — See your Claude team at work, right in VS Code",
+  "scripts": {
+    "dev": "pnpm --parallel -r dev",
+    "dev:server": "pnpm --filter @pixel-agent-team/server dev",
+    "dev:client": "pnpm --filter @pixel-agent-team/client dev",
+    "build": "pnpm -r build",
+    "build:client": "pnpm --filter @pixel-agent-team/client build"
+  }
+}
