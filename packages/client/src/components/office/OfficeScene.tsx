@@ -1187,7 +1187,21 @@ function drawCeilingLights(ctx: CanvasRenderingContext2D) {
   }
 }
 
-// ---- Pixel Cat ----
+// ---- Pixel Cat State ----
+// Random sleep/wake cycle: 3–15 minutes per state
+let catSleeping = false;
+let catNextToggleFrame = Math.floor(Math.random() * (54000 - 10800) + 10800); // first toggle at random 3-15 min
+
+function updateCatState(frame: number): boolean {
+  if (frame >= catNextToggleFrame) {
+    catSleeping = !catSleeping;
+    // Next toggle in 3–15 minutes (at ~60fps: 10800–54000 frames)
+    const interval = Math.floor(Math.random() * (54000 - 10800) + 10800);
+    catNextToggleFrame = frame + interval;
+  }
+  return catSleeping;
+}
+
 // Cat position — walks a loop around the entire office
 function getCatPosition(frame: number, canvasW: number, canvasH: number): { x: number; y: number; facingRight: boolean; sitting: boolean } {
   const top = WALL_HEIGHT + 40;
@@ -1747,7 +1761,7 @@ function drawFloorDecorations(ctx: CanvasRenderingContext2D, frame: number, noAg
   drawLitterBox(ctx, w - 60, WALL_HEIGHT + 170);
   drawCatToys(ctx, w - 20, WALL_HEIGHT + 185, frame);
 
-  if (noAgents) {
+  if (noAgents || updateCatState(frame)) {
     // Cat sleeping in front of the cat house
     drawSleepingCat(ctx, w - 30, WALL_HEIGHT + 148, frame);
   } else {
