@@ -1223,6 +1223,71 @@ function getCatPosition(frame: number, canvasW: number, canvasH: number): { x: n
   return { x, y, facingRight, sitting };
 }
 
+function drawSleepingCat(ctx: CanvasRenderingContext2D, x: number, y: number, frame: number) {
+  ctx.save();
+  const breathe = Math.sin(frame * 0.03) * 0.5;
+
+  // Curled-up body
+  ctx.fillStyle = "#FF8C00";
+  ctx.fillRect(x - 8, y - 2 + breathe, 16, 8);
+  // Belly
+  ctx.fillStyle = "#FFB347";
+  ctx.fillRect(x - 6, y + breathe, 12, 5);
+  // Stripes
+  ctx.fillStyle = "#E07000";
+  ctx.fillRect(x - 4, y - 1 + breathe, 2, 6);
+  ctx.fillRect(x + 2, y - 1 + breathe, 2, 6);
+
+  // Curled tail wrapping around body
+  ctx.fillStyle = "#FF8C00";
+  ctx.fillRect(x + 7, y + 2 + breathe, 4, 3);
+  ctx.fillRect(x + 9, y - 1 + breathe, 3, 4);
+  ctx.fillStyle = "#FFB347";
+  ctx.fillRect(x + 10, y + breathe, 2, 2);
+
+  // Head resting on paws
+  ctx.fillStyle = "#FF8C00";
+  ctx.fillRect(x - 12, y - 6 + breathe, 10, 8);
+  ctx.fillStyle = "#FFB347";
+  ctx.fillRect(x - 10, y - 3 + breathe, 6, 4);
+
+  // Ears (flat/relaxed)
+  ctx.fillStyle = "#FF8C00";
+  ctx.fillRect(x - 13, y - 9 + breathe, 3, 4);
+  ctx.fillRect(x - 6, y - 9 + breathe, 3, 4);
+  ctx.fillStyle = "#FFB8B8";
+  ctx.fillRect(x - 12, y - 8 + breathe, 1, 2);
+  ctx.fillRect(x - 5, y - 8 + breathe, 1, 2);
+
+  // Closed eyes (sleeping lines)
+  ctx.fillStyle = "#1A1A1A";
+  ctx.fillRect(x - 11, y - 3 + breathe, 2, 1);
+  ctx.fillRect(x - 7, y - 3 + breathe, 2, 1);
+
+  // Nose
+  ctx.fillStyle = "#FF6B6B";
+  ctx.fillRect(x - 9, y - 1 + breathe, 2, 1);
+
+  // Front paws tucked under head
+  ctx.fillStyle = "#FFB8B8";
+  ctx.fillRect(x - 13, y + 2 + breathe, 3, 2);
+  ctx.fillRect(x - 4, y + 2 + breathe, 3, 2);
+
+  // Zzz animation
+  const zFloat = Math.sin(frame * 0.04) * 2;
+  const zAlpha = 0.4 + Math.sin(frame * 0.02) * 0.3;
+  ctx.fillStyle = `rgba(200, 200, 255, ${zAlpha})`;
+  ctx.font = "bold 6px monospace";
+  ctx.textAlign = "left";
+  ctx.fillText("z", x - 16, y - 12 + zFloat);
+  ctx.font = "bold 8px monospace";
+  ctx.fillText("z", x - 21, y - 18 + zFloat * 0.8);
+  ctx.font = "bold 10px monospace";
+  ctx.fillText("Z", x - 27, y - 26 + zFloat * 0.6);
+
+  ctx.restore();
+}
+
 function drawCat(ctx: CanvasRenderingContext2D, x: number, y: number, frame: number, facingRight: boolean, sitting: boolean) {
   ctx.save();
   if (!facingRight) {
@@ -1669,7 +1734,7 @@ function drawWallDecorations(ctx: CanvasRenderingContext2D, frame: number) {
 }
 
 // ---- Floor Decorations ----
-function drawFloorDecorations(ctx: CanvasRenderingContext2D, frame: number) {
+function drawFloorDecorations(ctx: CanvasRenderingContext2D, frame: number, noAgents: boolean) {
   const w = CANVAS_WIDTH;
 
   // Left side: plant, water cooler, trash bin
@@ -1682,9 +1747,14 @@ function drawFloorDecorations(ctx: CanvasRenderingContext2D, frame: number) {
   drawLitterBox(ctx, w - 60, WALL_HEIGHT + 170);
   drawCatToys(ctx, w - 20, WALL_HEIGHT + 185, frame);
 
-  // Cat roaming
-  const catPos = getCatPosition(frame, CANVAS_WIDTH, ctx.canvas.height);
-  drawCat(ctx, catPos.x, catPos.y, frame, catPos.facingRight, catPos.sitting);
+  if (noAgents) {
+    // Cat sleeping in front of the cat house
+    drawSleepingCat(ctx, w - 30, WALL_HEIGHT + 148, frame);
+  } else {
+    // Cat roaming around the office
+    const catPos = getCatPosition(frame, CANVAS_WIDTH, ctx.canvas.height);
+    drawCat(ctx, catPos.x, catPos.y, frame, catPos.facingRight, catPos.sitting);
+  }
 
   if (w >= 400) {
     drawPlant(ctx, w - 30, WALL_HEIGHT + 30, frame, 3);
@@ -1855,7 +1925,7 @@ export function OfficeScene() {
       drawWall(ctx);
       drawFloor(ctx);
       drawWallDecorations(ctx, frame);
-      drawFloorDecorations(ctx, frame);
+      drawFloorDecorations(ctx, frame, agents.length === 0);
 
       // (no carpet)
 
