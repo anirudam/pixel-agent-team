@@ -41,7 +41,7 @@ export function SidePanel() {
   const activeCount = agents.filter((a) => a.activity !== "idle").length;
 
   return (
-    <div className="flex flex-col h-full bg-gray-950 border-l border-amber-900/20">
+    <div className="flex flex-col h-full bg-gray-950 border-l border-amber-900/20 shadow-[-4px_0_20px_rgba(0,0,0,0.5)]">
       {/* Agents section -- takes 2/3 of space */}
       <div className="flex-[2] p-3 overflow-hidden flex flex-col min-h-0">
         <div className="flex items-center justify-between mb-2">

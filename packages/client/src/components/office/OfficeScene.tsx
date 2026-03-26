@@ -1,63 +1,64 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import { useAgents } from "../../hooks/useAgentState";
+import { useAgentStore } from "../../stores/agent-store";
 import type { Agent, AgentActivity } from "../../types/events";
 
-const CANVAS_WIDTH = 960;
+let CANVAS_WIDTH = 580; // updated dynamically from deskCols
 const WALL_HEIGHT = 96;
-
-// Layout config
-const DESK_COLS = 4;
-const DESK_X_START = 160;
-const DESK_X_SPACING = 200;
 const MAIN_ROW_Y_START = 170;
-const SUB_ROW_Y_START_OFFSET = 170; // offset from zone divider
+const SUB_ROW_Y_START_OFFSET = 170;
 const ROW_HEIGHT = 120;
 const DESK_PADDING_BOTTOM = 40;
 
-/**
- * Calculate dynamic grid positions based on agent count.
- * Returns positions array and total rows needed.
- */
+/** Derive canvas width and desk spacing from column count */
+function getDeskLayout(cols: number) {
+  const spacing = Math.max(140, Math.min(200, 580 / cols));
+  const xStart = spacing / 2 + 40;
+  const canvasWidth = Math.max(400, xStart + cols * spacing);
+  return { spacing, xStart, canvasWidth };
+}
+
 function calcGridPositions(
   count: number,
-  startY: number
+  startY: number,
+  cols: number
 ): { x: number; y: number }[] {
+  const { spacing, xStart } = getDeskLayout(cols);
   const positions: { x: number; y: number }[] = [];
   for (let i = 0; i < count; i++) {
-    const col = i % DESK_COLS;
-    const row = Math.floor(i / DESK_COLS);
+    const col = i % cols;
+    const row = Math.floor(i / cols);
     positions.push({
-      x: DESK_X_START + col * DESK_X_SPACING,
+      x: xStart + col * spacing,
       y: startY + row * ROW_HEIGHT,
     });
   }
   return positions;
 }
 
-function calcRowCount(count: number): number {
-  return Math.max(1, Math.ceil(count / DESK_COLS));
+function calcRowCount(count: number, cols: number): number {
+  return Math.max(1, Math.ceil(count / cols));
 }
 
-/**
- * Calculate canvas height and zone divider Y dynamically.
- */
-function calcLayout(mainCount: number, subCount: number) {
-  const mainRows = calcRowCount(mainCount);
+function calcLayout(mainCount: number, subCount: number, cols: number) {
+  const mainRows = calcRowCount(mainCount, cols);
   const mainZoneHeight = mainRows * ROW_HEIGHT;
   const zoneDividerY = WALL_HEIGHT + mainZoneHeight + 20;
 
-  const subRows = calcRowCount(subCount);
+  const subRows = calcRowCount(subCount, cols);
   const subZoneHeight = subRows * ROW_HEIGHT;
 
   const canvasHeight = zoneDividerY + subZoneHeight + DESK_PADDING_BOTTOM;
 
   return {
     zoneDividerY,
-    canvasHeight: Math.max(canvasHeight, 500), // minimum height
-    mainPositions: calcGridPositions(Math.max(mainCount, DESK_COLS), MAIN_ROW_Y_START),
+    canvasHeight: Math.max(canvasHeight, 500),
+    canvasWidth: getDeskLayout(cols).canvasWidth,
+    mainPositions: calcGridPositions(Math.max(mainCount, cols), MAIN_ROW_Y_START, cols),
     subPositions: calcGridPositions(
-      Math.max(subCount, DESK_COLS),
-      zoneDividerY + SUB_ROW_Y_START_OFFSET - ROW_HEIGHT
+      Math.max(subCount, cols),
+      zoneDividerY + SUB_ROW_Y_START_OFFSET - ROW_HEIGHT,
+      cols
     ),
   };
 }
@@ -1026,44 +1027,49 @@ function drawPainting(ctx: CanvasRenderingContext2D, x: number, y: number, varia
 
 // ---- All Wall Decorations ----
 function drawWallDecorations(ctx: CanvasRenderingContext2D, frame: number) {
-  // Bookshelves
-  drawBookshelf(ctx, 16, 16);
-  drawBookshelf(ctx, CANVAS_WIDTH - 76, 16);
+  const w = CANVAS_WIDTH;
+  const cx = w / 2;
 
-  // Windows
-  drawWindow(ctx, CANVAS_WIDTH / 2 - 100, frame);
-  drawWindow(ctx, CANVAS_WIDTH / 2 + 100, frame);
-
-  // Wall clock
-  drawWallClock(ctx, 260, 40, frame);
-
-  // Paintings (on wall between windows and bookshelves)
-  drawPainting(ctx, 160, 20, 0); // between left bookshelf and clock
-  drawPainting(ctx, 730, 20, 1); // between right window and right bookshelf
-  drawPainting(ctx, CANVAS_WIDTH / 2, 16, 2); // between the two windows
-
-  // Small wall lamp
-  ctx.fillStyle = "#DAA520";
-  ctx.fillRect(CANVAS_WIDTH / 2 - 2, 32, 4, 8);
-  ctx.fillStyle = "#FFF8DC";
-  ctx.fillRect(CANVAS_WIDTH / 2 - 6, 26, 12, 8);
-  ctx.fillStyle = "#FFEB6044";
-  ctx.fillRect(CANVAS_WIDTH / 2 - 10, 22, 20, 16);
+  if (w >= 600) {
+    // Wide: 2 bookshelves, 2 windows, clock center between windows, 2 paintings on sides
+    drawBookshelf(ctx, 16, 16);
+    drawBookshelf(ctx, w - 76, 16);
+    drawWindow(ctx, cx - 100, frame);
+    drawWindow(ctx, cx + 100, frame);
+    drawWallClock(ctx, cx, 32, frame);
+    drawPainting(ctx, 120, 20, 0);
+    drawPainting(ctx, w - 120, 20, 1);
+  } else if (w >= 450) {
+    // Medium (3-4 cols): 1 bookshelf, 2 windows, clock center between windows
+    drawBookshelf(ctx, 16, 16);
+    drawWindow(ctx, cx - 80, frame);
+    drawWindow(ctx, cx + 80, frame);
+    drawWallClock(ctx, cx, 32, frame);
+  } else {
+    // Narrow: 1 window center, clock
+    drawWindow(ctx, cx, frame);
+    drawWallClock(ctx, 40, 40, frame);
+  }
 }
 
 // ---- Floor Decorations ----
 function drawFloorDecorations(ctx: CanvasRenderingContext2D, frame: number) {
-  // Plants
-  drawPlant(ctx, 40, WALL_HEIGHT + 30, frame, 0);
-  drawPlant(ctx, CANVAS_WIDTH - 40, WALL_HEIGHT + 30, frame, 3);
-  drawTallPlant(ctx, 780, WALL_HEIGHT + 80, frame);
-  drawPlant(ctx, 860, WALL_HEIGHT + 200, frame, 7);
+  const w = CANVAS_WIDTH;
 
-  // Trash bin
-  drawTrashBin(ctx, 900, WALL_HEIGHT + 50);
+  // Always show: 1 plant left, water cooler left
+  drawPlant(ctx, 30, WALL_HEIGHT + 30, frame, 0);
+  drawWaterCooler(ctx, 30, WALL_HEIGHT + 120);
 
-  // Water cooler
-  drawWaterCooler(ctx, 40, WALL_HEIGHT + 120);
+  if (w >= 400) {
+    // Plant + trash right side
+    drawPlant(ctx, w - 30, WALL_HEIGHT + 30, frame, 3);
+    drawTrashBin(ctx, w - 40, WALL_HEIGHT + 50);
+  }
+  if (w >= 550) {
+    // Extra decorations
+    drawTallPlant(ctx, w - 50, WALL_HEIGHT + 80, frame);
+    drawPlant(ctx, w - 40, WALL_HEIGHT + 200, frame, 7);
+  }
 }
 
 // ---- Main Component ----
@@ -1158,6 +1164,7 @@ export function OfficeScene() {
   const animRef = useRef<number>(0);
   const frameRef = useRef<number>(0);
   const agents = useAgents();
+  const deskCols = useAgentStore((s) => s.deskCols);
   const [tooltip, setTooltip] = useState<{ text: string; x: number; y: number; agentName?: string } | null>(null);
 
   // Mouse hover handler for agent tooltips
@@ -1173,7 +1180,7 @@ export function OfficeScene() {
 
       const mainAgents = agents.filter((a: Agent) => !a.parentId);
       const subAgents = agents.filter((a: Agent) => !!a.parentId);
-      const layout = calcLayout(mainAgents.length, subAgents.length);
+      const layout = calcLayout(mainAgents.length, subAgents.length, deskCols);
 
       // Check main agents
       for (let i = 0; i < mainAgents.length; i++) {
@@ -1197,7 +1204,7 @@ export function OfficeScene() {
       }
       setTooltip(null);
     },
-    [agents]
+    [agents, deskCols]
   );
 
   const draw = useCallback(
@@ -1207,14 +1214,20 @@ export function OfficeScene() {
       const subAgents = agents.filter((a: Agent) => !!a.parentId);
 
       // Calculate dynamic layout
-      const layout = calcLayout(mainAgents.length, subAgents.length);
+      const layout = calcLayout(mainAgents.length, subAgents.length, deskCols);
+
+      // Update module-level CANVAS_WIDTH from layout
+      CANVAS_WIDTH = layout.canvasWidth;
 
       // Resize canvas if needed
+      if (canvas.width !== layout.canvasWidth) {
+        canvas.width = layout.canvasWidth;
+      }
       if (canvas.height !== layout.canvasHeight) {
         canvas.height = layout.canvasHeight;
       }
 
-      ctx.clearRect(0, 0, CANVAS_WIDTH, layout.canvasHeight);
+      ctx.clearRect(0, 0, layout.canvasWidth, layout.canvasHeight);
       ctx.imageSmoothingEnabled = false;
 
       // Background layers
@@ -1264,7 +1277,7 @@ export function OfficeScene() {
       });
 
       // Empty main desks (fill remaining slots in current rows)
-      const mainSlots = calcRowCount(mainAgents.length) * DESK_COLS;
+      const mainSlots = calcRowCount(mainAgents.length, deskCols) * deskCols;
       for (let i = mainAgents.length; i < mainSlots; i++) {
         const pos = layout.mainPositions[i];
         if (!pos) continue;
@@ -1295,7 +1308,7 @@ export function OfficeScene() {
       });
 
       // Empty sub desks
-      const subSlots = calcRowCount(subAgents.length) * DESK_COLS;
+      const subSlots = calcRowCount(subAgents.length, deskCols) * deskCols;
       for (let i = subAgents.length; i < subSlots; i++) {
         const pos = layout.subPositions[i];
         if (!pos) continue;
@@ -1342,7 +1355,7 @@ export function OfficeScene() {
         );
       }
     },
-    [agents]
+    [agents, deskCols]
   );
 
   useEffect(() => {
@@ -1364,25 +1377,50 @@ export function OfficeScene() {
     };
   }, [draw]);
 
+  const zoom = useAgentStore((s) => s.zoom);
+  const zoomIn = useAgentStore((s) => s.zoomIn);
+  const zoomOut = useAgentStore((s) => s.zoomOut);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Ctrl+Scroll wheel zoom
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    const handleWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        if (e.deltaY < 0) zoomIn();
+        else zoomOut();
+      }
+    };
+    wrapper.addEventListener("wheel", handleWheel, { passive: false });
+    return () => wrapper.removeEventListener("wheel", handleWheel);
+  }, [zoomIn, zoomOut]);
+
   return (
-    <div className="relative inline-block">
-      <canvas
-        ref={canvasRef}
-        width={CANVAS_WIDTH}
-        height={500}
-        className="rounded-lg border border-amber-900/30 shadow-2xl shadow-amber-900/10"
-        style={{ imageRendering: "pixelated" }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={() => setTooltip(null)}
-      />
-      {tooltip && (
-        <div
-          className="absolute pointer-events-none bg-gray-900/95 text-white text-xs font-mono px-3 py-1.5 rounded-md border border-amber-700/40 shadow-lg whitespace-nowrap"
-          style={{ left: tooltip.x, top: tooltip.y, transform: "translate(-50%, -100%)" }}
-        >
-          {tooltip.agentName || tooltip.text}
-        </div>
-      )}
+    <div ref={wrapperRef} className="w-full h-full flex items-center justify-center overflow-auto p-4">
+      <div
+        className="relative inline-block origin-center transition-transform duration-150"
+        style={{ transform: `scale(${zoom})` }}
+      >
+        <canvas
+          ref={canvasRef}
+          width={CANVAS_WIDTH}
+          height={500}
+          className="rounded-lg border border-amber-900/30 shadow-2xl shadow-amber-900/10"
+          style={{ imageRendering: "pixelated" }}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={() => setTooltip(null)}
+        />
+        {tooltip && (
+          <div
+            className="absolute pointer-events-none bg-gray-900/95 text-white text-xs font-mono px-3 py-1.5 rounded-md border border-amber-700/40 shadow-lg whitespace-nowrap"
+            style={{ left: tooltip.x, top: tooltip.y, transform: "translate(-50%, -100%)" }}
+          >
+            {tooltip.agentName || tooltip.text}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
