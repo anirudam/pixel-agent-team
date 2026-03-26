@@ -1025,29 +1025,355 @@ function drawPainting(ctx: CanvasRenderingContext2D, x: number, y: number, varia
   }
 }
 
+// ---- Rug / Carpet ----
+function drawRug(ctx: CanvasRenderingContext2D, x: number, y: number, w: number) {
+  const rw = Math.min(w - 40, 300);
+  const rx = x - rw / 2;
+  // Outer border
+  ctx.fillStyle = "#6B1A3A";
+  ctx.fillRect(rx, y, rw, 20);
+  // Inner
+  ctx.fillStyle = "#8B2252";
+  ctx.fillRect(rx + 3, y + 2, rw - 6, 16);
+  // Border lines
+  ctx.fillStyle = "#A0325E";
+  ctx.fillRect(rx + 6, y + 4, rw - 12, 1);
+  ctx.fillRect(rx + 6, y + 15, rw - 12, 1);
+  // Diamond pattern
+  ctx.fillStyle = "#C0446E55";
+  const diamonds = Math.floor((rw - 24) / 28);
+  const dStart = rx + (rw - diamonds * 28) / 2;
+  for (let i = 0; i < diamonds; i++) {
+    ctx.fillRect(dStart + i * 28 + 10, y + 7, 8, 6);
+  }
+  // Fringe
+  ctx.fillStyle = "#6B1A3A88";
+  for (let i = 0; i < rw / 6; i++) {
+    ctx.fillRect(rx + i * 6 + 2, y - 2, 2, 3);
+    ctx.fillRect(rx + i * 6 + 2, y + 19, 2, 3);
+  }
+}
+
+// ---- Whiteboard ----
+function drawWhiteboard(ctx: CanvasRenderingContext2D, x: number, y: number, frame: number) {
+  // Frame
+  ctx.fillStyle = "#C0C0C0";
+  ctx.fillRect(x, y, 50, 38);
+  // Board
+  ctx.fillStyle = "#F8F8F8";
+  ctx.fillRect(x + 2, y + 2, 46, 30);
+  // Tray
+  ctx.fillStyle = "#A0A0A0";
+  ctx.fillRect(x, y + 32, 50, 4);
+  // Marker on tray
+  ctx.fillStyle = "#E74C3C";
+  ctx.fillRect(x + 6, y + 33, 10, 2);
+  ctx.fillStyle = "#3498DB";
+  ctx.fillRect(x + 20, y + 33, 10, 2);
+  // TODO list content
+  ctx.fillStyle = "#333333";
+  ctx.font = "5px monospace";
+  ctx.textAlign = "left";
+  ctx.fillText("TODO:", x + 5, y + 10);
+  // Checklist items
+  const items = ["Ship v2", "Fix bugs", "Review PR", "Deploy"];
+  for (let i = 0; i < items.length; i++) {
+    const done = i < 2;
+    // Checkbox
+    ctx.fillStyle = done ? "#2ECC71" : "#BDC3C7";
+    ctx.fillRect(x + 5, y + 13 + i * 5, 4, 4);
+    if (done) {
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(x + 6, y + 14 + i * 5, 2, 2);
+    }
+    // Text
+    ctx.fillStyle = done ? "#999999" : "#333333";
+    ctx.fillText(items[i], x + 11, y + 17 + i * 5);
+  }
+}
+
+// ---- Ceiling Lights ----
+function drawCeilingLights(ctx: CanvasRenderingContext2D) {
+  const w = CANVAS_WIDTH;
+  const count = Math.max(1, Math.floor(w / 200));
+  const spacing = w / (count + 1);
+  for (let i = 0; i < count; i++) {
+    const lx = spacing * (i + 1);
+    // Rod
+    ctx.fillStyle = "#555555";
+    ctx.fillRect(lx - 1, 0, 2, 8);
+    // Fixture
+    ctx.fillStyle = "#666666";
+    ctx.fillRect(lx - 10, 6, 20, 4);
+    // Light panel
+    ctx.fillStyle = "#FFFFEE";
+    ctx.fillRect(lx - 8, 10, 16, 3);
+    // Glow
+    ctx.fillStyle = "#FFFFEE18";
+    ctx.fillRect(lx - 20, 10, 40, 30);
+    ctx.fillStyle = "#FFFFEE08";
+    ctx.fillRect(lx - 30, 10, 60, 50);
+  }
+}
+
+// ---- Pixel Cat ----
+function drawCat(ctx: CanvasRenderingContext2D, x: number, y: number, frame: number) {
+  const tailWag = Math.sin(frame * 0.08) * 3;
+  const earTwitch = Math.sin(frame * 0.05) > 0.8 ? -1 : 0;
+  const blink = Math.sin(frame * 0.03) > 0.95;
+  const breathe = Math.sin(frame * 0.04) * 0.5;
+
+  // Tail
+  ctx.fillStyle = "#FF8C00";
+  ctx.fillRect(x + 8, y - 4 + tailWag, 3, 8);
+  ctx.fillRect(x + 10, y - 6 + tailWag, 3, 4);
+  // Tail tip
+  ctx.fillStyle = "#FFB347";
+  ctx.fillRect(x + 11, y - 7 + tailWag, 2, 3);
+
+  // Body
+  ctx.fillStyle = "#FF8C00";
+  ctx.fillRect(x - 6, y + breathe, 14, 8);
+  // Belly
+  ctx.fillStyle = "#FFB347";
+  ctx.fillRect(x - 4, y + 2 + breathe, 10, 5);
+  // Stripes
+  ctx.fillStyle = "#E07000";
+  ctx.fillRect(x - 4, y + 1 + breathe, 2, 6);
+  ctx.fillRect(x + 2, y + 1 + breathe, 2, 6);
+
+  // Head
+  ctx.fillStyle = "#FF8C00";
+  ctx.fillRect(x - 6, y - 8, 12, 10);
+  // Face
+  ctx.fillStyle = "#FFB347";
+  ctx.fillRect(x - 4, y - 4, 8, 5);
+
+  // Ears
+  ctx.fillStyle = "#FF8C00";
+  ctx.fillRect(x - 7, y - 12 + earTwitch, 4, 5);
+  ctx.fillRect(x + 3, y - 12 + earTwitch, 4, 5);
+  // Inner ear
+  ctx.fillStyle = "#FFB8B8";
+  ctx.fillRect(x - 6, y - 11 + earTwitch, 2, 3);
+  ctx.fillRect(x + 4, y - 11 + earTwitch, 2, 3);
+
+  // Eyes
+  if (!blink) {
+    ctx.fillStyle = "#2ECC71";
+    ctx.fillRect(x - 4, y - 6, 3, 3);
+    ctx.fillRect(x + 1, y - 6, 3, 3);
+    // Pupils
+    ctx.fillStyle = "#1A1A1A";
+    ctx.fillRect(x - 3, y - 5, 1, 2);
+    ctx.fillRect(x + 2, y - 5, 1, 2);
+  } else {
+    ctx.fillStyle = "#1A1A1A";
+    ctx.fillRect(x - 4, y - 5, 3, 1);
+    ctx.fillRect(x + 1, y - 5, 3, 1);
+  }
+
+  // Nose
+  ctx.fillStyle = "#FF6B6B";
+  ctx.fillRect(x - 1, y - 3, 2, 1);
+  // Whiskers
+  ctx.fillStyle = "#CCCCCC";
+  ctx.fillRect(x - 10, y - 3, 5, 1);
+  ctx.fillRect(x + 5, y - 3, 5, 1);
+  ctx.fillRect(x - 9, y - 1, 4, 1);
+  ctx.fillRect(x + 5, y - 1, 4, 1);
+
+  // Paws
+  ctx.fillStyle = "#FF8C00";
+  ctx.fillRect(x - 6, y + 7, 4, 3);
+  ctx.fillRect(x + 2, y + 7, 4, 3);
+  // Paw pads
+  ctx.fillStyle = "#FFB8B8";
+  ctx.fillRect(x - 5, y + 8, 2, 1);
+  ctx.fillRect(x + 3, y + 8, 2, 1);
+}
+
+// ---- Wall Poster ----
+function drawPoster(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  // Paper
+  ctx.fillStyle = "#1A1A2E";
+  ctx.fillRect(x, y, 36, 28);
+  // Border
+  ctx.fillStyle = "#F59E0B";
+  ctx.fillRect(x + 1, y + 1, 34, 1);
+  ctx.fillRect(x + 1, y + 26, 34, 1);
+  ctx.fillRect(x + 1, y + 1, 1, 26);
+  ctx.fillRect(x + 34, y + 1, 1, 26);
+  // Terminal prompt icon
+  ctx.fillStyle = "#22C55E";
+  ctx.fillRect(x + 8, y + 6, 4, 2);
+  ctx.fillRect(x + 8, y + 8, 2, 2);
+  ctx.fillStyle = "#60A5FA";
+  ctx.fillRect(x + 14, y + 6, 14, 2);
+  ctx.fillRect(x + 14, y + 10, 10, 2);
+  // Text "KEEP" "CODING"
+  ctx.fillStyle = "#F59E0B";
+  ctx.font = "bold 5px monospace";
+  ctx.textAlign = "center";
+  ctx.fillText("KEEP", x + 18, y + 20);
+  ctx.fillText("CODING", x + 18, y + 26);
+}
+
+// ---- AC Unit ----
+function drawAC(ctx: CanvasRenderingContext2D, x: number, y: number, frame: number) {
+  // Body
+  ctx.fillStyle = "#E0E0E0";
+  ctx.fillRect(x, y, 40, 14);
+  // Top edge
+  ctx.fillStyle = "#F0F0F0";
+  ctx.fillRect(x, y, 40, 2);
+  // Vents
+  ctx.fillStyle = "#CCCCCC";
+  for (let i = 0; i < 5; i++) {
+    ctx.fillRect(x + 4 + i * 7, y + 8, 5, 1);
+    ctx.fillRect(x + 4 + i * 7, y + 10, 5, 1);
+  }
+  // LED indicator
+  const blink = Math.sin(frame * 0.05) > 0;
+  ctx.fillStyle = blink ? "#22C55E" : "#22C55E88";
+  ctx.fillRect(x + 34, y + 3, 3, 2);
+  // Air flow (subtle)
+  ctx.fillStyle = "#FFFFFF08";
+  const airOff = (frame * 0.3) % 12;
+  ctx.fillRect(x + 4, y + 14, 32, 4 + airOff);
+}
+
+// ---- Ambient Particles ----
+function drawParticles(ctx: CanvasRenderingContext2D, frame: number) {
+  const w = CANVAS_WIDTH;
+  const h = ctx.canvas.height;
+  const count = Math.max(5, Math.floor(w / 60));
+  for (let i = 0; i < count; i++) {
+    const seed = i * 137.5;
+    const px = (seed * 7.3 + frame * 0.1 * (0.3 + (i % 3) * 0.2)) % w;
+    const py = (seed * 3.7 + frame * 0.05 * (0.5 + (i % 2) * 0.3)) % (h - WALL_HEIGHT) + WALL_HEIGHT;
+    const alpha = Math.sin(frame * 0.02 + seed) * 0.3 + 0.3;
+    const size = 1 + (i % 2);
+    ctx.fillStyle = `rgba(255, 255, 220, ${alpha * 0.15})`;
+    ctx.fillRect(px, py, size, size);
+  }
+}
+
+// ---- Day/Night Cycle ----
+function getDayNightOverlay(): { color: string; windowTint: string; isNight: boolean } {
+  const hour = new Date().getHours();
+  if (hour >= 6 && hour < 8) {
+    // Dawn
+    return { color: "rgba(255, 180, 100, 0.06)", windowTint: "#FFD4A0", isNight: false };
+  } else if (hour >= 8 && hour < 17) {
+    // Day
+    return { color: "rgba(0, 0, 0, 0)", windowTint: "#87CEEB", isNight: false };
+  } else if (hour >= 17 && hour < 19) {
+    // Dusk
+    return { color: "rgba(255, 120, 50, 0.08)", windowTint: "#E8956A", isNight: false };
+  } else {
+    // Night
+    return { color: "rgba(10, 10, 40, 0.2)", windowTint: "#1A1A3E", isNight: true };
+  }
+}
+
+function drawDayNightOverlay(ctx: CanvasRenderingContext2D) {
+  const { color } = getDayNightOverlay();
+  if (color === "rgba(0, 0, 0, 0)") return;
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, CANVAS_WIDTH, ctx.canvas.height);
+}
+
+// ---- Night Window (stars + moon) ----
+function drawNightWindow(ctx: CanvasRenderingContext2D, x: number, frame: number) {
+  const { windowTint, isNight } = getDayNightOverlay();
+  // Outer frame shadow
+  ctx.fillStyle = "#3A2A14";
+  ctx.fillRect(x - 50, 10, 100, 62);
+  // Frame
+  ctx.fillStyle = "#5C3A1E";
+  ctx.fillRect(x - 48, 12, 96, 58);
+  // Sky with day/night tint
+  ctx.fillStyle = windowTint;
+  ctx.fillRect(x - 44, 16, 88, 50);
+
+  if (isNight) {
+    // Moon
+    ctx.fillStyle = "#F5F0D0";
+    ctx.fillRect(x + 24, 20, 10, 10);
+    ctx.fillStyle = windowTint;
+    ctx.fillRect(x + 28, 18, 8, 8); // crescent shadow
+    // Stars
+    ctx.fillStyle = "#FFFFFFCC";
+    const stars = [[x - 30, 22], [x - 18, 34], [x + 6, 24], [x - 8, 44], [x + 14, 38], [x - 24, 50]];
+    for (const [sx, sy] of stars) {
+      const twinkle = Math.sin(frame * 0.05 + sx * 0.1) > 0.3;
+      if (twinkle) ctx.fillRect(sx, sy, 2, 2);
+    }
+  } else {
+    // Sun
+    ctx.fillStyle = "#FFF3B0";
+    ctx.fillRect(x + 24, 20, 10, 10);
+    ctx.fillStyle = "#FFEB6044";
+    ctx.fillRect(x + 22, 18, 14, 14);
+    // Clouds
+    const cloudOff = (frame * 0.15) % 100;
+    ctx.fillStyle = "#FFFFFFCC";
+    const cx1 = x - 30 + cloudOff * 0.3;
+    ctx.fillRect(cx1, 24, 18, 6);
+    ctx.fillRect(cx1 + 2, 20, 12, 4);
+    const cx2 = x + 8 - cloudOff * 0.2;
+    ctx.fillRect(cx2, 32, 22, 6);
+    ctx.fillRect(cx2 + 4, 28, 14, 4);
+  }
+
+  // Cross bars
+  ctx.fillStyle = "#5C3A1E";
+  ctx.fillRect(x - 1, 16, 2, 50);
+  ctx.fillRect(x - 44, 40, 88, 2);
+  // Window sill
+  ctx.fillStyle = "#6B4226";
+  ctx.fillRect(x - 52, 66, 104, 6);
+  ctx.fillStyle = "#7A4E2E";
+  ctx.fillRect(x - 52, 66, 104, 2);
+
+  // Night: window glow on floor
+  if (isNight) {
+    ctx.fillStyle = "rgba(100, 100, 180, 0.05)";
+    ctx.fillRect(x - 44, WALL_HEIGHT, 88, 40);
+  }
+}
+
 // ---- All Wall Decorations ----
 function drawWallDecorations(ctx: CanvasRenderingContext2D, frame: number) {
   const w = CANVAS_WIDTH;
   const cx = w / 2;
 
+  // Ceiling lights (always)
+  drawCeilingLights(ctx);
+
   if (w >= 600) {
-    // Wide: 2 bookshelves, 2 windows, clock center between windows, 2 paintings on sides
+    // Wide: full decorations
     drawBookshelf(ctx, 16, 16);
     drawBookshelf(ctx, w - 76, 16);
-    drawWindow(ctx, cx - 100, frame);
-    drawWindow(ctx, cx + 100, frame);
+    drawNightWindow(ctx, cx - 100, frame);
+    drawNightWindow(ctx, cx + 100, frame);
     drawWallClock(ctx, cx, 32, frame);
     drawPainting(ctx, 120, 20, 0);
-    drawPainting(ctx, w - 120, 20, 1);
+    drawPoster(ctx, w - 156, 16);
+    drawWhiteboard(ctx, w - 70, 16, frame);
+    drawAC(ctx, cx - 20, WALL_HEIGHT - 22, frame);
   } else if (w >= 450) {
-    // Medium (3-4 cols): 1 bookshelf, 2 windows, clock center between windows
+    // Medium (3-4 cols)
     drawBookshelf(ctx, 16, 16);
-    drawWindow(ctx, cx - 80, frame);
-    drawWindow(ctx, cx + 80, frame);
+    drawNightWindow(ctx, cx - 80, frame);
+    drawNightWindow(ctx, cx + 80, frame);
     drawWallClock(ctx, cx, 32, frame);
+    drawPoster(ctx, w - 52, 20);
+    drawAC(ctx, cx - 20, WALL_HEIGHT - 22, frame);
   } else {
-    // Narrow: 1 window center, clock
-    drawWindow(ctx, cx, frame);
+    // Narrow: minimal
+    drawNightWindow(ctx, cx, frame);
     drawWallClock(ctx, 40, 40, frame);
   }
 }
@@ -1056,17 +1382,16 @@ function drawWallDecorations(ctx: CanvasRenderingContext2D, frame: number) {
 function drawFloorDecorations(ctx: CanvasRenderingContext2D, frame: number) {
   const w = CANVAS_WIDTH;
 
-  // Always show: 1 plant left, water cooler left
+  // Always show: 1 plant left, water cooler left, cat
   drawPlant(ctx, 30, WALL_HEIGHT + 30, frame, 0);
   drawWaterCooler(ctx, 30, WALL_HEIGHT + 120);
+  drawCat(ctx, 60, WALL_HEIGHT + 70, frame);
 
   if (w >= 400) {
-    // Plant + trash right side
     drawPlant(ctx, w - 30, WALL_HEIGHT + 30, frame, 3);
     drawTrashBin(ctx, w - 40, WALL_HEIGHT + 50);
   }
   if (w >= 550) {
-    // Extra decorations
     drawTallPlant(ctx, w - 50, WALL_HEIGHT + 80, frame);
     drawPlant(ctx, w - 40, WALL_HEIGHT + 200, frame, 7);
   }
@@ -1236,6 +1561,9 @@ export function OfficeScene() {
       drawWallDecorations(ctx, frame);
       drawFloorDecorations(ctx, frame);
 
+      // Rug at zone divider
+      drawRug(ctx, layout.canvasWidth / 2, layout.zoneDividerY - 10, layout.canvasWidth);
+
       // Collect all drawable items for Y-sorting
       type Drawable = { y: number; draw: () => void };
       const drawables: Drawable[] = [];
@@ -1330,6 +1658,12 @@ export function OfficeScene() {
 
       // Draw parent-child connection lines between agents
       drawAgentConnections(ctx, agents, frame, layout);
+
+      // Ambient particles
+      drawParticles(ctx, frame);
+
+      // Day/night overlay
+      drawDayNightOverlay(ctx);
 
       // "No agents" overlay
       if (agents.length === 0) {
